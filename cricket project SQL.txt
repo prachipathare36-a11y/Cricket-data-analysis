@@ -1,0 +1,149 @@
+# creating a new database per our cricket anlysis
+create database first_project;
+
+use first_project;
+select * from cricket_data limit 3;
+ 
+#Setting up a fix start date
+
+update cricket_data
+set start_date = str_to_date('start_date,%d-%m-%y');
+update Cricket_data
+set  start_date = left(start_date,10);
+
+#counting and grouping various columns
+
+alter table cricket_data
+modify start_date Date;
+UPDATE cricket_data 
+SET start_date = STR_TO_DATE(start_date, '%d-%m-%Y');
+SET SQL_SAFE_UPDATES = 0;
+UPDATE cricket_data 
+SET end_date = str_to_date(end_date, '%d-%m-%Y');
+select count(*) as total_matches
+from cricket_data;
+SELECT season, COUNT(*) AS total_matches
+FROM cricket_data
+GROUP BY season
+ORDER BY total_matches DESC;
+select Winner,count(*)as wins
+from cricket_data
+group by winner
+order by wins desc
+limit 1;
+select winner, count(*)as wins
+from cricket_data
+group by winner
+order by wins 
+limit 5;
+
+-- toss jitkar match jitne wali team?
+select count(*) as toss_and_match
+from cricket_data
+where toss_won = winner;
+
+_ _ toss winning   batting vs bowling decision analysis
+select decision, count(*) as total
+from cricket_data
+group by decision;
+
+_ _ highest score (1st ining)
+select Max(first_inning_score) as Highest_score
+from cricket_data;
+
+_ _ lowest score(1st inning)
+select Min(first_inning_score) as lowest_score
+from cricket_data;
+
+__ highest run chase (2nd inning)
+select Max(second_inning_score) as highest_chase
+from cricket_data;
+
+ _ _ player of the match 
+select pom, count(*) as awards
+from cricket_data
+group by pom
+order by awards DESC
+LIMIT 1;
+ 
+ _ _ TOP 5 PLAYER OF THE MATCH 
+ select pom, count(*) as awards
+from cricket_data
+group by pom
+order by awards DESC
+LIMIT 5;
+
+_ _ HOME TEAM VS AWAY TEAM PERFOMANCE
+SELECT Home_team, count(*) as home_matches
+from cricket_data
+group by home_team;
+
+SELECT away_team, count(*) as away_matches
+from cricket_data
+group by away_team;
+
+ _ _ 
+ select venue_name, count(*) as matches
+ from cricket_data
+ group by venue_name
+ order by matches DESC
+ LIMIT 1;
+_ _ Matches where team won by chasing
+select count(*) as chasing_wins
+From cricket_data
+where second_inning_score > first_inning_score;
+
+_ _ matches where team defended score
+
+select count(*) as defended_wins
+from cricket_data
+where second_inning_score > first_inning_score;
+_ _ every season  winnner count
+
+select season, winner, count(*) as wins
+from cricket_data 
+group by season,winner
+order by season, wins desc;
+
+_ _toss winning team
+select toss_won,count(*) as toss_wins
+from cricket_data
+group by toss_won
+order by toss_wins desc 
+limit 1;
+_ _ avg score per match
+select avg(first_inning_score) as avg_fist,
+        avg(second_inning_score)
+        from cricket_data;
+        
+        close matches (differnt<10runs)
+select * from cricket_data
+where ABS(first_inning_score-second_inning_score) < 10
+limit 10;
+
+team wise win percentage
+select winner, count(*)*100.0/(select count(*) from cricket_data) as win_percentage
+			from cricket_data
+            group by winner
+            order by win_percentage desc;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
